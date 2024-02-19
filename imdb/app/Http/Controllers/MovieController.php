@@ -90,7 +90,7 @@ class MovieController extends Controller
             $groupedCast[$role][] = $person;
         }
 
-        // verificar se esta ou não nos favoritos
+        // verificar se está ou não nos favoritos do user 
         $user = auth()->user();
         if ($user && $user->favoritos) {
             // Obtém os IDs dos favoritos do usuário
@@ -100,7 +100,15 @@ class MovieController extends Controller
             $favoriteMultimediaIds = [];
         }
 
-        return view('front-office.multimedia.details', compact('movie','genres', 'groupedCast','favoriteMultimediaIds', 'relatedMovies', 'comments', 'id'));
+        // Verifica se o user está autenticado e se possui favoritos para apresentar no modal
+        $favoriteLists = [];
+        $user = auth()->user();
+        if ($user && $user->favoritos) {
+            $favoriteLists = $user->favoritos;
+        }
+
+
+        return view('front-office.multimedia.details', compact('movie','genres', 'groupedCast','favoriteMultimediaIds', 'favoriteLists', 'relatedMovies', 'comments', 'id'));
     }
 
     public function addToFavorites(Request $request) //adicionar aos favoritos atraves do all media

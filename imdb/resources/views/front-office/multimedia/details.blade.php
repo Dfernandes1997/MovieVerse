@@ -3,7 +3,116 @@
 @section('content')
 
 <!-- Modal Add Favorites -->
-<!-- Modal manage Favorites -->
+<div class="modal fade" id="addToFavoritesModal" tabindex="-1" aria-labelledby="addToFavoritesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: rgba(31,33,34,0.95); color: white;">
+      <div class="modal-header" style="background-color: rgba(31,33,34,0.95); color: white;">
+        <h5 class="modal-title" id="addToFavoritesModalLabel">Add Media</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" style="background-color: #ec6090;"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('add.to.favorites') }}" method="POST">
+          @csrf
+          <div class="mb-3">
+            <label for="favoriteList" class="form-label">Add to WatchList:</label>
+            <select class="form-select" id="favoriteList" name="favoriteList">
+              @auth
+                @if ($favoriteLists->isEmpty())
+                    <option value="">You don't have none</option>
+                @else
+                    <option value="">Choose one</option>
+                    @foreach ($favoriteLists as $favoriteList)
+                        <option value="{{ $favoriteList->id }}">{{ $favoriteList->name }}</option>
+                    @endforeach
+                @endif
+              @endauth
+          </select>
+          </div>
+          <div class="mb-3">
+            <label for="newListName" class="form-label">Create a new one:</label>
+            <input type="text" class="form-control" id="newListName" name="newListName">
+          </div>
+          <input type="hidden" id="multimediaIdInput" name="multimedia_id" value="">
+          <div class="modal-footer" style="background-color: rgba(31,33,34,0.95);">
+            <button type="submit" class="btn btn" style="background-color: #ec6090; color: white;">Add</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Manage Favorites -->
+<div class="modal fade" id="manageFavoritesModal" tabindex="-1" aria-labelledby="manageFavoritesModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="background-color: rgba(31,33,34,0.95); color: white;">
+      <div class="modal-header" style="background-color: rgba(31,33,34,0.95); color: white;">
+        <h5 class="modal-title" id="manageFavoritesModalLabel">Manage Watchlist</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar" style="background-color: #ec6090;"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Select Action</label>
+          <div class="btn-group" role="group" aria-label="List Action">
+              <input type="radio" class="btn-check" name="listAction" id="addList" autocomplete="off" value="add" required>
+              <label class="btn btn-outline-secondary" for="addList">Add</label>
+
+              <input type="radio" class="btn-check" name="listAction" id="removeList" autocomplete="off" value="remove" required>
+              <label class="btn btn-outline-secondary" for="removeList">Remove</label>
+          </div>
+        </div>
+
+        <div id="addListContent" style="display: none;"> 
+          <form action="{{ route('add.to.favorites') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+              <label for="favoriteList" class="form-label">Add to WatchList:</label>
+              <select class="form-select" id="favoriteList" name="favoriteList">
+                @auth
+                  @if ($favoriteLists->isEmpty())
+                      <option value="">You don't have none</option>
+                  @else
+                      <option value="">Choose one</option>
+                      @foreach ($favoriteLists as $favoriteList)
+                          <option value="{{ $favoriteList->id }}">{{ $favoriteList->name }}</option>
+                      @endforeach
+                  @endif
+                @endauth
+            </select>
+            </div>
+            <div class="mb-3">
+              <label for="newListName" class="form-label">Create a new one:</label>
+              <input type="text" class="form-control" id="newListName" name="newListName">
+            </div>
+            <input type="hidden" id="multimediaIdToAdd" name="multimedia_id" value="">
+            <div class="modal-footer" style="background-color: rgba(31,33,34,0.95);">
+              <button type="submit" class="btn btn" style="background-color: #ec6090; color: white;">Add</button>
+            </div>
+          </form>
+        </div>
+
+        <div id="removeListContent" style="display: none;">
+          <form action="{{ route('remove.from.favorites') }}" method="POST">
+            @csrf
+            <div class="mb-3">
+              <label for="favoriteList" class="form-label">Select Favorite List:</label>
+              <select class="form-select" id="favoriteList" name="favoriteList">
+                @foreach ($favoriteLists as $favoriteList)
+                    <option value="{{ $favoriteList->id }}">{{ $favoriteList->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <input type="hidden" id="multimediaIdToRemove" name="multimedia_id" value="">
+            <div class="modal-footer" style="background-color: rgba(31,33,34,0.95);">
+              <button type="submit" class="btn btn" style="background-color: #ec6090; color: white;">Remove</button>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- Modal Comment -->
 <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
@@ -115,19 +224,39 @@
             <div class="col-lg-12">
               <h2>{{ $movie->title }} <span style="color: #e75e8d;"> Details</span>
                 @auth
+                <div class="d-inline-flex">
+                  {{-- Verificar se o user ja tem nos favoritos ou não --}}
                   @if (in_array($movie->id, $favoriteMultimediaIds))
-                  <form method="POST" action="{{ route('favorites.remove', ['multimediaFavoritosId' => $movie->favoritos->first()->pivot->id]) }}" style="display: inline;">
-                      @csrf
-                      @method('DELETE')
-                      <button type="submit" class="btn btn-link"><i class="fa fa-bookmark fa-3x" style="color: white;"></i></button>
-                  </form>
+                    <button type="button" class="btn btn-link manageFavoritesButton" data-bs-toggle="modal" data-bs-target="#manageFavoritesModal" data-multimedia-id="{{ $movie->id }}">
+                      <i class="fa fa-bookmark fa-3x" style="color: white;"></i>
+                    </button>
                   @else
-                    <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#addToFavoritesModal">
+                    <button type="button" class="btn btn-link addToFavoritesButton" data-bs-toggle="modal" data-bs-target="#addToFavoritesModal" data-multimedia-id="{{ $movie->id }}">
                       <i class="fa fa-bookmark-o fa-3x" style="color: white;"></i>
                     </button>
                   @endif
+
+                  {{-- Verificar se o user ja deu like --}}
+                  @if (Auth::user()->likes()->where('multimedia_id', $movie->id)->exists())
+                    <form action="{{ route('unlike', $movie) }}" method="POST">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-link">
+                        <i class="fa fa-thumbs-up fa-3x" style="color: white; margin-left: -10px;"></i>
+                      </button>
+                    </form>
+                  @else
+                    <form action="{{ route('like', $movie) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-link">
+                          <i class="fa fa-thumbs-o-up fa-3x" style="color: white; margin-left: -10px;"></i>
+                        </button>
+                    </form>
+                  @endif
+                </div>
                 @else
                   <a href="{{ url('/no-account') }}"><i class="fa fa-bookmark-o fa-1x" style="color: white;"></i></a>
+                  <a href="{{ url('/no-account-like') }}"><i class="fa fa-thumbs-o-up fa-1x" style="color: white;"></i></a>
                 @endauth
               </h2>                
               <div class="d-flex justify-content-center mt-3 mb-5">
@@ -358,6 +487,7 @@
   </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 
   // Captura o parent_id quando carregar no icone reply
@@ -397,6 +527,52 @@
         document.getElementById('confirmDeleteCommentForm').action = "{{ route('comments.destroy', '') }}" + "/" + CommentId;
     });
   });
+
+  // Adiciona um evento de clique para o botão do bookmark
+  document.querySelectorAll('.addToFavoritesButton').forEach(function(button) {
+      button.addEventListener('click', function() {
+          var multimediaId = this.getAttribute('data-multimedia-id'); // Obtém o ID do multimedia
+          document.getElementById('multimediaIdInput').value = multimediaId; // Define o valor do campo oculto no modal
+      });
+  });
+
+  // Adiciona um evento de clique para os botões de adicionar e remover
+  document.querySelectorAll('.manageFavoritesButton').forEach(function(button) {
+      button.addEventListener('click', function() {
+          var multimediaId = this.getAttribute('data-multimedia-id');
+          document.getElementById('multimediaIdToAdd').value = multimediaId;
+          document.getElementById('multimediaIdToRemove').value = multimediaId;
+      });
+  });
+
+  // Adiciona um evento de clique para os botões de adicionar e remover dentro do modal
+  document.querySelectorAll('.manageFavoritesModalButton').forEach(function(button) {
+      button.addEventListener('click', function() {
+          var action = this.getAttribute('data-action');
+          if (action === 'add') {
+              var multimediaId = document.getElementById('multimediaIdToAdd').value;
+              // Enviar o formulário com o ID da multimídia e a ação de adicionar
+          } else if (action === 'remove') {
+              var multimediaId = document.getElementById('multimediaIdToRemove').value;
+              // Enviar o formulário com o ID da multimídia e a ação de remover
+          }
+      });
+  });
+
+  //mudança de manage modal
+  $(document).ready(function() {
+        $('input[name="listAction"]').change(function() {
+            var selectedAction = $(this).val();
+
+            if (selectedAction === 'add') {
+                $('#addListContent').show();
+                $('#removeListContent').hide();
+            } else if (selectedAction === 'remove') {
+                $('#addListContent').hide();
+                $('#removeListContent').show();
+            }
+        });
+    });
 
 </script>
 

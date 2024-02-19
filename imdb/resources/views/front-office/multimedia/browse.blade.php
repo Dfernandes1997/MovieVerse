@@ -195,17 +195,38 @@
                       </li>
                       <li>
                         @auth
+                          {{-- Verificar se o user ja tem nos favoritos ou não --}}
                           @if (in_array($media->id, $favoriteMultimediaIds))
                             <button type="button" class="btn btn-link manageFavoritesButton" data-bs-toggle="modal" data-bs-target="#manageFavoritesModal" data-multimedia-id="{{ $media->id }}">
-                              <i class="fa fa-bookmark fa-3x" style="color: white;"></i>
+                              <i class="fa fa-bookmark fa-2x" style="color: white; margin-top: -10px;"></i>
                             </button>
                           @else
                             <button type="button" class="btn btn-link addToFavoritesButton" data-bs-toggle="modal" data-bs-target="#addToFavoritesModal" data-multimedia-id="{{ $media->id }}">
-                              <i class="fa fa-bookmark-o fa-3x" style="color: white;"></i>
+                              <i class="fa fa-bookmark-o fa-2x" style="color: white; margin-top: -10px;"></i>
                             </button>
                           @endif
+
+                          {{-- Verificar se o user ja deu like --}}
+                          @if (Auth::user()->likes()->where('multimedia_id', $media->id)->exists())
+                            <form action="{{ route('unlike', $media) }}" method="POST">
+                              @csrf
+                              @method('DELETE')
+                              <button type="submit" class="btn btn-link">
+                                <i class="fa fa-thumbs-up fa-2x" style="color: white; margin-top: -10px;"></i>
+                              </button>
+                            </form>
+                          @else
+                            <form action="{{ route('like', $media) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-link">
+                                  <i class="fa fa-thumbs-o-up fa-2x" style="color: white; margin-top: -10px;"></i>
+                                </button>
+                            </form>
+                          @endif
                         @else
-                          <a href="{{ url('/no-account') }}"><i class="fa fa-bookmark-o fa-3x" style="color: white;"></i></a>
+                          <a href="{{ url('/no-account') }}"><i class="fa fa-bookmark-o fa-2x" style="color: white;"></i></a>
+                          <span style="margin: 5px 10px;"></span>
+                          <a href="{{ url('/no-account-like') }}"><i class="fa fa-thumbs-o-up fa-2x" style="color: white;"></i></a>
                         @endauth
                       </li>
                     </ul>

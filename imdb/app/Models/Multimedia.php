@@ -57,4 +57,9 @@ class Multimedia extends Model
     {
         return $this->hasMany(Comment::class); // uma multimedia pode ter varios comments
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class); // uma multimedia pode ter varios likes 
+    }
 }

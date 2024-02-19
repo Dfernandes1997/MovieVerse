@@ -52,4 +52,11 @@ class SessionsController extends Controller
         // Redirecionar para a página inicial
         return redirect('/#start-stream')->with("success","You need an account to Comment or Reply.");
     }
+
+    // Método para lidar com o acesso não autorizado aos likes
+    public function redirectStart()
+    {
+        // Redirecionar para a página inicial
+        return redirect('/#start-stream')->with("success","You need an account to give Likes.");
+    }
 }

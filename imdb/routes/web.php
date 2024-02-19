@@ -5,6 +5,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\PersonController;
@@ -51,6 +52,13 @@ Route::delete('/comments/delete/{id}', [CommentController::class, 'destroy'])->n
 Route::put('/comments/update/{id}', [CommentController::class, 'update'])->name('comments.update'); //editar comentario
 // Message se tentar comentar sem conta
 Route::get('/no-account-comment', [SessionsController::class, 'redirectToStart'])->name('no-account-comment');
+
+
+//Likes Controller
+Route::post('/like/{multimedia}', [LikeController::class, 'like'])->name('like'); // dar like na multimedia
+Route::delete('/unlike/{multimedia}', [LikeController::class, 'unlike'])->name('unlike'); // unlike na multimedia
+// Message se tentar dar like sem conta
+Route::get('/no-account-like', [SessionsController::class, 'redirectStart'])->name('no-account-like');
 
 
 
