@@ -359,7 +359,7 @@
                     <mxGeometry x="730" y="230" width="35" height="20" as="geometry"/>
                 </mxCell>
                 <mxCell id="187" value="Contact" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="622.5" y="855" width="140" height="210" as="geometry">
+                    <mxGeometry x="590" y="840" width="140" height="210" as="geometry">
                         <mxRectangle x="550" y="90" width="70" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>

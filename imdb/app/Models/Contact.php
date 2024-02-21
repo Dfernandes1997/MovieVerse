@@ -11,10 +11,10 @@ class Contact extends Model
 
     protected $table = 'contacts'; // nome da tabela explicitamente(normalmente plural)
     protected $fillable = [
-        'nome',
+        'name',
         'contato',
         'titulo',
         'mensagem',
-        'lida',
+        'read',
     ];
 }

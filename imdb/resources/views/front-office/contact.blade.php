@@ -33,16 +33,24 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="heading-section d-flex justify-content-between align-items-center mb-3">
-                        <h4><em>Contact</em> Support <i class="fa fa-phone"></i></h4>
+                        <h4><em>Contact</em> Support <i class="fa fa-envelope"></i></h4>
                     </div>
-                    <form id="contactForm" method="POST">
+                    <form id="contactForm" method="POST" action="{{ route('contact.save') }}">
                     @csrf
                     <div class="row">
                         <div class="col-md-6 form-group mb-5">
-                            <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required
+                                @auth
+                                    value="{{ auth()->user()->name }}"
+                                @endauth
+                            >
                         </div>
                         <div class="col-md-6 form-group mb-5">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required
+                                @auth
+                                    value="{{ auth()->user()->email }}"
+                                @endauth
+                            >
                         </div>
                         <div class="col-md-12 form-group mb-5">
                             <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject" required>

@@ -33,7 +33,9 @@ Route::get('/', [HomeController::class, 'index']); //pagina de home
 
 Route::get('/profile', function () {return view('front-office.profile');}); //pagina de profile, melhorar com user id na route, meter middleware de auth ????????
 
-Route::get('/support', [ContactController::class, 'ContactForm'])->name('contact'); //pagina de contacto/mensagens ao admin
+//// Contact Controller
+Route::get('/support', [ContactController::class, 'ContactForm'])->name('contact'); //pagina de support/mandar mensagens
+Route::post('/save-message', [ContactController::class, 'saveContactMessage'])->name('contact.save'); // Criar entrada na coluna Contact com os inputs do form
 
 // Passar todos os dados para o front movies MovieController
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.all'); // mostrar todos os filmes
