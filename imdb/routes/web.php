@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentLikeController;
 use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
@@ -26,8 +27,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-////////////////////// Front-office
+////////////////////////////////////////////////////////////////////////////////// Front-office
 Route::get('/', [HomeController::class, 'index']); //pagina de home
+
+Route::get('/profile', function () {return view('front-office.profile');}); //pagina de profile, melhorar com user id na route, meter middleware de auth ????????
 
 // Passar todos os dados para o front movies MovieController
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.all'); // mostrar todos os filmes
@@ -37,11 +40,13 @@ Route::post('/movies/removefromfavorites', [MovieController::class, 'removefromF
 
 
 //Favorites Controller
-Route::get('/favorites', [FavoritesController::class, 'favorites'])->name('movies.favorites');
-Route::delete('/favorites/{multimediaFavoritosId}', [FavoritesController::class, 'remove'])->name('favorites.remove'); // eliminar media de uma lista
-Route::put('/favorites/update/{id}', [FavoritesController::class, 'update'])->name('favorites.update'); // update ao nome da lista
-Route::delete('/favorites/delete/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');// eliminar lista
-Route::post('/favorites/create', [FavoritesController::class, 'create'])->name('favorites.create'); //Criar nova lista 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [FavoritesController::class, 'favorites'])->name('movies.favorites');
+    Route::delete('/favorites/{multimediaFavoritosId}', [FavoritesController::class, 'remove'])->name('favorites.remove'); // eliminar media de uma lista
+    Route::put('/favorites/update/{id}', [FavoritesController::class, 'update'])->name('favorites.update'); // update ao nome da lista
+    Route::delete('/favorites/delete/{id}', [FavoritesController::class, 'destroy'])->name('favorites.destroy');// eliminar lista
+    Route::post('/favorites/create', [FavoritesController::class, 'create'])->name('favorites.create'); //Criar nova lista
+}); 
 // Message se tentar aceder ao watchlist sem conta
 Route::get('/no-account', [SessionsController::class, 'redirectToStartStream'])->name('no-account');
 
@@ -54,28 +59,38 @@ Route::put('/comments/update/{id}', [CommentController::class, 'update'])->name(
 Route::get('/no-account-comment', [SessionsController::class, 'redirectToStart'])->name('no-account-comment');
 
 
-//Likes Controller
-Route::post('/like/{multimedia}', [LikeController::class, 'like'])->name('like'); // dar like na multimedia
-Route::delete('/unlike/{multimedia}', [LikeController::class, 'unlike'])->name('unlike'); // unlike na multimedia
+//Multimedia Likes Controller
+Route::middleware(['auth'])->group(function () {
+    Route::post('/like/{multimedia}', [LikeController::class, 'like'])->name('like'); // dar like na multimedia
+    Route::delete('/unlike/{multimedia}', [LikeController::class, 'unlike'])->name('unlike'); // unlike na multimedia
+});
 // Message se tentar dar like sem conta
 Route::get('/no-account-like', [SessionsController::class, 'redirectStart'])->name('no-account-like');
 
+//Comment Likes Controller
+Route::middleware(['auth'])->group(function () {
+    Route::post('/commentlike/{comment}', [CommentLikeController::class, 'commentlike'])->name('commentlike'); // dar like no comment
+    Route::delete('/commentunlike/{comment}', [CommentLikeController::class, 'commentunlike'])->name('commentunlike'); // unlike no comment
+});
+// Message se tentar dar like sem conta
+Route::get('/no-account-like', [SessionsController::class, 'redirectStart'])->name('no-account-like');
 
+Route::middleware(['guest'])->group(function () {
+    //Register
+    Route::get('register', [RegisterController::class,'create']); //mostrar página
+    Route::post('register', [RegisterController::class,'register']); // registar na base de dados
 
-//Register
-Route::get('register', [RegisterController::class,'create'])->middleware('guest'); //mostrar página
-Route::post('register', [RegisterController::class,'register'])->middleware('guest'); // registar na base de dados
-
-//Login
-Route::get('login',[SessionsController::class,'create'])->middleware('guest'); //mostrar página
-Route::post('login',[SessionsController::class,'login'])->middleware('guest'); // verificar se existe e dar login
+    //Login
+    Route::get('login',[SessionsController::class,'create']); //mostrar página
+    Route::post('login',[SessionsController::class,'login']); // verificar se existe e dar login
+});
 
 //Logout
 Route::post('logout', [SessionsController::class,'logout'])->middleware('auth');
 
 
 
-//////////////////////// Back-office
+//////////////////////////////////////////////////////////////////////////////// Back-office
 Route::get('admin', [AdminController::class,'home'])->middleware('admin'); //mostrar página admin do back-office, // a middleware que criamos e colocamos no kernell
 
 //Multimedia controller

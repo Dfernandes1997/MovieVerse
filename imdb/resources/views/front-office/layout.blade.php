@@ -77,7 +77,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                                     <a href="#" onclick="document.getElementById('logoutForm').submit();"><i class="fa fa-sign-out"></i> Log out</a>
                                 </form>
                             </li>
-                            <li><a href="profile.html">{{ auth()->user()->username }}<img src="{{asset('assets/front-section/images/profile-header.jpg')}}" alt=""></a></li>
+                            <li><a href="{{ url('profile') }}">{{ auth()->user()->username }}<img src="{{asset('assets/front-section/images/profile-header.jpg')}}" alt=""></a></li>
                         @else
                             <li><a href="{{ url('login') }}"><i class="fa fa-sign-in"></i> Log in</a></li>
                         @endauth

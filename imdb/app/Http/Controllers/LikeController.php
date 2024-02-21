@@ -16,7 +16,7 @@ class LikeController extends Controller
             // Se o user ainda não deu like, coluna likes mais 1
             $multimedia->increment('likes');
 
-            // Crie um registro na tabela de likes
+            // Criar um registo na tabela de likes
             $user->likes()->create(['multimedia_id' => $multimedia->id]);
         }
 
@@ -28,12 +28,12 @@ class LikeController extends Controller
     {
         $user = auth()->user();
         
-        // Verifique se o user já deu like nesta multimedia
+        // Verificar se o user já deu like nesta multimedia
         if ($user->likes()->where('multimedia_id', $multimedia->id)->exists()) {
             // Se o user já deu like, remover a entrada na tabela de likes
             $user->likes()->where('multimedia_id', $multimedia->id)->delete();
 
-            // Reduza a contagem de likes na coluna likes da tabela multimedia
+            // Reduzir a contagem de likes na coluna likes da tabela multimedia
             $multimedia->decrement('likes');
         }
 

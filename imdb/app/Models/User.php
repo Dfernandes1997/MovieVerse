@@ -55,7 +55,12 @@ class User extends Authenticatable
 
     public function likes()
     {
-        return $this->hasMany(Like::class); // um user pode ter/fazer varios likes
+        return $this->hasMany(Like::class); // um user pode ter/fazer varios likes as multimedias
+    }
+
+    public function commentLikes()
+    {
+        return $this->hasMany(CommentLike::class); // um user pode ter/fazer varios likes aos comments
     }
 
 }

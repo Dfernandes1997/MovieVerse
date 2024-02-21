@@ -141,44 +141,43 @@
           <div class="row">
             <div class="col-lg-12">
               <div class="heading-section d-flex justify-content-between align-items-center">
-                <h4><em>All</em> Media Collection</h4>
-                <div>
-                  <form id="search" action="#" style="position: relative;">
-                    <input type="text" style="background-color: #27292a; height: 46px; border-radius: 23px; border: none; color: #666; font-size: 14px; padding: 0px 15px 0px 45px;" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                    <i class="fa fa-search" style="position: absolute; color: #666;left: 20px; top: 16px; width: 18px; height: 18px; font-size: 16px;"></i>
-                  </form>
-                </div>
+                <h4><em>All</em> Media</h4>
                 <div class="filter-links">
                   <form method="GET" action="{{ route('movies.all') }}" class="row align-items-center">
-                      <div class="col-auto mb-4">
+                      <div class="col-auto mb-4" id="searchForm" style="position: relative;">
+                        <input type="text" style="width: 200px; background-color: #27292a; height: 46px; border-radius: 23px; border: none; color: #666; font-size: 14px; padding: 0px 15px 0px 45px;" placeholder="Type Something" id='search-input' name="search" value="{{ request()->input('search') }}" />
+                        <i class="fa fa-search" style="position: absolute; color: #666;left: 20px; top: 16px; width: 18px; height: 18px; font-size: 16px;"></i>
+                      </div>
+                      <div class="col-auto mb-5">
+                        <label for="genres" class="form-label" style="color: #e75e8d; font-weight: bold;">Select Genres:</label>
+                        <select name="genres[]" id="genres" class="form-select">
+                          <option value="all" {{ in_array('all', request()->input('genres', [])) ? 'selected' : '' }}>All Genres</option>
+                          @foreach($genres as $genre)
+                            <option value="{{ $genre->id }}" {{ in_array($genre->id, request()->input('genres', [])) ? 'selected' : '' }}>{{ $genre->name }}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                      <div class="col-auto mb-5">
                           <label for="sort" class="form-label" style="color: #e75e8d; font-weight: bold;">Sort by:</label>
                           <select name="sort" id="sort" class="form-select">
-                              <option value="imdb_votes">Votes</option>
-                              <option value="imdb_rating">Rating</option>
-                              <option value="released">Released</option>
+                            <option value="imdb_votes" {{ request()->input('sort') == 'imdb_votes' ? 'selected' : '' }}>Votes</option>
+                            <option value="imdb_rating" {{ request()->input('sort') == 'imdb_rating' ? 'selected' : '' }}>Rating</option>
+                            <option value="released" {{ request()->input('sort') == 'released' ? 'selected' : '' }}>Released</option>
                           </select>
                       </div>
-                      <div class="col-auto mb-4">
+                      <div class="col-auto mb-5">
                           <label for="order" class="form-label" style="color: #e75e8d; font-weight: bold;">Order:</label>
                           <select name="order" id="order" class="form-select">
-                              <option value="asc">Ascending</option>
-                              <option value="desc">Descending</option>
+                            <option value="asc" {{ request()->input('order') == 'asc' ? 'selected' : '' }}>Ascending</option>
+                            <option value="desc" {{ request()->input('order') == 'desc' ? 'selected' : '' }}>Descending</option>
                           </select>
                       </div>
-                      <div class="col-auto">
-                          <button type="submit" class="btn btn" style="background-color: #e75e8d; color: white;">Sort</button>
+                      <div class="col-auto mb-3">
+                          <button type="submit" class="btn btn" style="background-color: #e75e8d; color: white;"><i class="fa fa-search"></i></button>
                       </div>
                   </form>
                 </div>
               </div>
-              <!-- ***** Search End ***** -->
-              {{-- <div class="search-input">
-                <form id="search" action="#">
-                  <input type="text" placeholder="Type Something" id='searchText' name="searchKeyword" onkeypress="handle" />
-                  <i class="fa fa-search"></i>
-                </form>
-              </div> --}}
-              <!-- ***** Search End ***** -->
 
               <div class="row" id="movies-container">
                 @foreach ($multimedia as $media)
@@ -192,17 +191,18 @@
                       <li>
                         <p style="color: white;">IMDb : {{ $media->imdb_rating ? $media->imdb_rating : 'N/A' }} <i class="fa fa-star"></i></p>
                         <p style="color: white;">Metascore : {{ $media->metascore ? $media->metascore : 'N/A' }} <i class="fa fa-star" style="color: #ec6090;" ></i></p>
+                        <p style="color: white;"> {{ $media->likes }} <i class="fa fa-thumbs-up" style="color: rgb(0, 162, 255);"></i></p>
                       </li>
                       <li>
                         @auth
                           {{-- Verificar se o user ja tem nos favoritos ou não --}}
                           @if (in_array($media->id, $favoriteMultimediaIds))
                             <button type="button" class="btn btn-link manageFavoritesButton" data-bs-toggle="modal" data-bs-target="#manageFavoritesModal" data-multimedia-id="{{ $media->id }}">
-                              <i class="fa fa-bookmark fa-2x" style="color: white; margin-top: -10px;"></i>
+                              <i class="fa fa-bookmark fa-2x" style="color: white; margin-top: 0px;"></i>
                             </button>
                           @else
                             <button type="button" class="btn btn-link addToFavoritesButton" data-bs-toggle="modal" data-bs-target="#addToFavoritesModal" data-multimedia-id="{{ $media->id }}">
-                              <i class="fa fa-bookmark-o fa-2x" style="color: white; margin-top: -10px;"></i>
+                              <i class="fa fa-bookmark-o fa-2x" style="color: white; margin-top: 0px;"></i>
                             </button>
                           @endif
 
@@ -224,7 +224,7 @@
                             </form>
                           @endif
                         @else
-                          <a href="{{ url('/no-account') }}"><i class="fa fa-bookmark-o fa-2x" style="color: white;"></i></a>
+                          <a href="{{ url('/no-account') }}"><i class="fa fa-bookmark-o fa-2x" style="color: white; margin-top: 10px;"></i></a>
                           <span style="margin: 5px 10px;"></span>
                           <a href="{{ url('/no-account-like') }}"><i class="fa fa-thumbs-o-up fa-2x" style="color: white;"></i></a>
                         @endauth
@@ -237,26 +237,26 @@
                 <div class="d-flex justify-content-center">
                   <div class="bg rounded h-100 p-4">
                       <ul class="pagination">
-                          <!-- Link para a página anterior -->
-                          @if ($multimedia->onFirstPage())
-                              <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                          @else
-                              <li class="page-item"><a class="page-link" href="{{ $multimedia->previousPageUrl() }}" rel="prev" style="color: #000000;">&laquo;</a></li>
-                          @endif
+                        <!-- Link para a página anterior -->
+                        @if ($multimedia->onFirstPage())
+                            <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                        @else
+                            <li class="page-item"><a class="page-link" href="{{ $multimedia->previousPageUrl() }}" rel="prev" style="color: #000000;">&laquo;</a></li>
+                        @endif
               
-                          <!-- Links das páginas -->
-                          @for ($i = 1; $i <= $multimedia->lastPage(); $i++)
-                              <li class="page-item {{ $i === $multimedia->currentPage() ? 'active' : '' }}">
-                                  <a class="page-link {{ $i === $multimedia->currentPage() ? 'active-link' : 'inactive-link' }}" href="{{ $multimedia->url($i) }}" style="{{ $i === $multimedia->currentPage() ? 'background-color: #ec6090; border-color: #ec6090; color: #fff;' : 'color: #000000;' }}">{{ $i }}</a>
-                              </li>
-                          @endfor
+                        <!-- Links das páginas -->
+                        @for ($i = 1; $i <= $multimedia->lastPage(); $i++)
+                        <li class="page-item {{ $i === $multimedia->currentPage() ? 'active' : '' }}">
+                            <a class="page-link {{ $i === $multimedia->currentPage() ? 'active-link' : 'inactive-link' }}" href="{{ $multimedia->appends(['sort' => $sort, 'order' => $order, 'search' => request()->input('search'), 'genres' => request()->input('genres')])->url($i) }}" style="{{ $i === $multimedia->currentPage() ? 'background-color: #ec6090; border-color: #ec6090; color: #fff;' : 'color: #000000;' }}">{{ $i }}</a>
+                        </li>
+                        @endfor
               
-                          <!-- Link para a próxima página -->
-                          @if ($multimedia->hasMorePages())
-                              <li class="page-item"><a class="page-link" href="{{ $multimedia->nextPageUrl() }}" rel="next" style="color: #000000;">&raquo;</a></li>
-                          @else
-                              <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                          @endif
+                        <!-- Link para a próxima página -->
+                        @if ($multimedia->hasMorePages())
+                            <li class="page-item"><a class="page-link" href="{{ $multimedia->nextPageUrl() }}" rel="next" style="color: #000000;">&raquo;</a></li>
+                        @else
+                            <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                        @endif
                       </ul>
                   </div>
                 </div>
@@ -318,7 +318,7 @@
                 $('#removeListContent').show();
             }
         });
-    });
+  });
 </script>
 
 @endsection

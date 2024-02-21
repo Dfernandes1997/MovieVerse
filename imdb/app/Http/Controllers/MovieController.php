@@ -16,11 +16,13 @@ class MovieController extends Controller
 {
     public function index(Request $request) // mostrar view
     {
-        $query = $request->input('query');
+        $query = $request->input('search');
         $sort = $request->input('sort', 'id');
         $order = $request->input('order', 'asc');
 
         $genres = Genre::all();
+        $selectedGenres = $request->input('genres', []);
+
         $multimediaGenres = MultimediaGenre::all();
         $persons = Person::all();
         $personRoles = PersonRole::all();
@@ -32,14 +34,26 @@ class MovieController extends Controller
         $rankedmovies = Multimedia::orderBy('imdb_rating', 'desc')
                         ->take(3)
                         ->get(); // Obter os 3 filmes com mais pontuação
+
+        $multimediaQuery = Multimedia::query();
+
+        // Filtrar por título
+        if (!empty($query)) {
+            $multimediaQuery->where('title', 'like', "%$query%");
+        }
         
-        $multimedia = Multimedia::when($query, function ($queryBuilder) use ($query) {
-            return $queryBuilder
-                ->where(function ($innerQueryBuilder) use ($query) {
-                    $innerQueryBuilder->where('title', 'like', '%' . $query . '%');
-                });
-        })->orderBy($sort, $order)
-        ->paginate(12);
+        // Filtrar por gênero
+        if (!empty($selectedGenres) && !in_array('all', $selectedGenres)) {
+            $multimediaQuery->whereHas('genres', function ($query) use ($selectedGenres) {
+                $query->whereIn('genre_id', $selectedGenres);
+            });
+        }
+        
+        // Ordenar as multimídias
+        $multimediaQuery->orderBy($sort, $order);
+
+        // Paginar os resultados
+        $multimedia = $multimediaQuery->paginate(16);
 
         // verificar se está ou não nos favoritos do user 
         $user = auth()->user();
@@ -58,7 +72,7 @@ class MovieController extends Controller
             $favoriteLists = $user->favoritos;
         }
 
-        return view('front-office.multimedia.browse', compact('genres', 'multimedia', 'multimediaGenres', 'persons', 'personRoles', 'types', 'topmovies','rankedmovies','favoriteMultimediaIds', 'favoriteLists'), ["multimedia"=> $multimedia, "query" => $query,'sort' => $sort, 'order' => $order]);
+        return view('front-office.multimedia.browse', compact('genres', 'multimedia', 'multimediaGenres', 'persons', 'personRoles', 'types', 'topmovies','rankedmovies','favoriteMultimediaIds', 'favoriteLists'), ["multimedia"=> $multimedia,'sort' => $sort, 'order' => $order]);
     }
 
     public function show($id) //filmes individuais, details

@@ -71,6 +71,7 @@
                     <h6>Released: {{ $movie->released }}</h6>
                   </a>
                   <span><i class="fa fa-star" style="color: yellow;"></i> IMDb : {{ $movie->imdb_rating ? $movie->imdb_rating : 'N/A' }}</span>
+                  <p><span><i class="fa fa-thumbs-up" style="color: rgb(0, 162, 255);"></i> Likes : {{ $movie->likes }}</span></p>
                 </li>
               </ul>
               @endforeach

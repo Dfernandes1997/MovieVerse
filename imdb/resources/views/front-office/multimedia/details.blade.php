@@ -422,18 +422,38 @@
                                 <i class="fa fa-pencil edit-comment mt-3" data-bs-toggle="modal" data-bs-target="#editCommentModal" style="color: white; font-size: 20px;" data-comment-id="{{ $comment->id }}"></i>
                                 <i class="fa fa-trash delete-comment" data-bs-toggle="modal" data-bs-target="#confirmDeleteCommentModal" style="color: white; font-size: 20px;" data-comment-id="{{ $comment->id }}"></i>
                               @endif
+                              @if(auth()->id() != $comment->user_id)
+                                {{-- Verificar se o user ja deu like no comment --}}
+                                @if (Auth::user()->commentLikes()->where('comment_id', $comment->id)->exists())
+                                <form action="{{ route('commentunlike', $comment) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-link" style="text-decoration: none; color: white; background: none; border: none;">
+                                      <p style="color: white; font-size: 25px;"><i class="fa fa-thumbs-up"></i> {{$comment->likes}}</p>
+                                    </button>
+                                  </form>
+                                @else
+                                  <form action="{{ route('commentlike', $comment) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link" style="text-decoration: none; color: white; background: none; border: none;">
+                                      <p style="color: white; font-size: 25px;"><i class="fa fa-thumbs-o-up"></i> {{$comment->likes}}</p>
+                                    </button>
+                                  </form>
+                                @endif
+                              @endif
                             @else
                               <a href="{{ url('/no-account-comment') }}">
                                 <i class="fa fa-reply fa-2x" style="color: white;"></i>
                               </a>
                               <p>Reply</p>
+                              <a href="{{ url('/no-account-like') }}"><i class="fa fa-thumbs-o-up" style="color: white; font-size: 25px;"></i> {{$comment->likes}}</a>
                             @endauth
                           </div>
                       </div>
                       <div class="comment-content">
                           <h6>{{ $comment->content }}</h6>
                       </div>
-                  </div>
+                  </div> 
 
                   <!-- Replies -->
                   @if ($comment->children->count() > 0)
@@ -456,6 +476,27 @@
                                         <i class="fa fa-pencil edit-comment" data-bs-toggle="modal" data-bs-target="#editCommentModal" style="color: white; font-size: 20px;" data-comment-id="{{ $child->id }}"></i>
                                         <i class="fa fa-trash delete-comment" data-bs-toggle="modal" data-bs-target="#confirmDeleteCommentModal" style="color: white; font-size: 20px;" data-comment-id="{{ $child->id }}"></i>
                                       @endif
+                                      @if(auth()->id() != $child->user_id)
+                                        {{-- Verificar se o user ja deu like no comment --}}
+                                        @if (Auth::user()->commentLikes()->where('comment_id', $child->id)->exists())
+                                        <form action="{{ route('commentunlike', $child) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-link" style="text-decoration: none; color: white; background: none; border: none;">
+                                              <p style="color: white; font-size: 25px;"><i class="fa fa-thumbs-up"></i> {{$child->likes}}</p>
+                                            </button>
+                                          </form>
+                                        @else
+                                          <form action="{{ route('commentlike', $child) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn btn-link" style="text-decoration: none; color: white; background: none; border: none;">
+                                              <p style="color: white; font-size: 25px;"><i class="fa fa-thumbs-o-up"></i> {{$child->likes}}</p>
+                                            </button>
+                                          </form>
+                                        @endif
+                                      @endif
+                                    @else
+                                      <a href="{{ url('/no-account-like') }}"><i class="fa fa-thumbs-o-up" style="color: white; font-size: 25px;"></i> {{$child->likes}}</a>
                                     @endauth
                                   </div>
                               </div>
