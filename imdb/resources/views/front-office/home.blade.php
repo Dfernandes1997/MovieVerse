@@ -153,7 +153,7 @@
               <div class="col-lg-12">
                 @auth
                   <div class="main-button">
-                    <a href="profile.html">Go To Profile</a>
+                    <a href="{{ url('profile') }}">Go To Profile</a>
                   </div>
                 @else
                   <div class="main-button">

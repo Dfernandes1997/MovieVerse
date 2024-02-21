@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommentLikeController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
@@ -31,6 +32,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index']); //pagina de home
 
 Route::get('/profile', function () {return view('front-office.profile');}); //pagina de profile, melhorar com user id na route, meter middleware de auth ????????
+
+Route::get('/support', [ContactController::class, 'ContactForm'])->name('contact'); //pagina de contacto/mensagens ao admin
 
 // Passar todos os dados para o front movies MovieController
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.all'); // mostrar todos os filmes

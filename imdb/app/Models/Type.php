@@ -9,7 +9,7 @@ class Type extends Model
 {
     use HasFactory;
 
-    protected $table = 'types'; // nome da tabela explicitamente(normalemente plural)
+    protected $table = 'types'; // nome da tabela explicitamente(normalmente plural)
     
     protected $fillable = [
         'name',

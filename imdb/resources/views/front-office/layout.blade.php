@@ -59,6 +59,7 @@ https://templatemo.com/tm-579-cyborg-gaming
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
                         <li><a href="{{ url('/') }}" class="{{ request()->is('/') ? 'active' : '' }}"><i class="fa fa-home"></i> Home</a></li>
+                        <li><a href="{{ url('support') }}"><i class="fa fa-phone"></i> Support</a></li>
                         <li><a href="{{ url('movies') }}" class="{{ request()->is('movies') ? 'active' : '' }}"><i class="fa fa-film"></i> Media</a></li>
                         <li>
                           @auth
@@ -102,7 +103,7 @@ https://templatemo.com/tm-579-cyborg-gaming
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-          <p>Copyright © 2036 <a href="#">Cyborg Movies</a> Company. All rights reserved. 
+          <p>Copyright © 2036 <a href="/">Cyborg Movies</a> Company. All rights reserved. 
           
           <br>Design: <a href="https://github.com/Dfernandes1997" target="_blank" title="free CSS templates">Diogo Fernandes</a>  Distributed By <a href="https://www.claranet.com/" target="_blank" >Claranet</a></p>
         </div>
