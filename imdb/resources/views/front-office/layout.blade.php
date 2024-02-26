@@ -15,7 +15,7 @@
 
     <!-- Additional CSS Files -->
     {{-- <link rel="stylesheet" href="{{asset('assets/front-section/css/fontawesome.css')}}" /> --}}
-    <script src="https://kit.fontawesome.com/b3779d2a08.js" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/b3779d2a08.js" crossorigin="anonymous"></script> {{-- mais recente do fav.icons --}}
     <link rel="stylesheet" href="{{asset('assets/front-section/css/templatemo-cyborg-gaming.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/front-section/css/owl.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/front-section/css/animate.css')}}" />

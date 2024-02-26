@@ -27,7 +27,8 @@ class GenreController extends Controller
             'person' => null,
             'multimedia' => null,
             'type'=>null,
-            'user'=>null
+            'user'=>null,
+            'contact'=>null,
         ], ["genre"=> $genre, "query" => $query,'sort' => $sort, 'order' => $order]);
     }
 

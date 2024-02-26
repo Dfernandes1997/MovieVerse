@@ -14,24 +14,24 @@
             <div class="main-profile ">
               <div class="row">
                 <div class="col-lg-4">
-                  <img src="assets/images/profile.jpg" alt="" style="border-radius: 23px;">
+                  <img src="{{asset('assets/front-section/images/profile-header.jpg')}}" alt="" style="border-radius: 23px;">
                 </div>
                 <div class="col-lg-4 align-self-center">
                   <div class="main-info header-text">
-                    <span>Offline</span>
-                    <h4>Alan Smithee</h4>
-                    <p>You Haven't Gone Live yet. Go Live By Touching The Button Below.</p>
+                    <span>Online</span>
+                    <h4>{{ auth()->user()->name }}</h4>
+                    <p>This is your profile, update your information. See your activity.</p>
                     <div class="main-border-button">
-                      <a href="#">Start Live Stream</a>
+                      <a href="{{ url('favorites') }}">My Watchlist</a>
                     </div>
                   </div>
                 </div>
                 <div class="col-lg-4 align-self-center">
                   <ul>
-                    <li>Games Downloaded <span>3</span></li>
-                    <li>Friends Online <span>16</span></li>
-                    <li>Live Streams <span>None</span></li>
-                    <li>Clips <span>29</span></li>
+                    <li>Number of Watchlist <span>{{ $watchlistCount }}</span></li>
+                    <li>Comments <span>{{ $comments }}</span></li>
+                    <li>Likes in other comments <span>{{ $commentlikes }}</span></li>
+                    <li>Media Likes <span>{{ $medialikes }}</span></li>
                   </ul>
                 </div>
               </div>
@@ -40,61 +40,59 @@
                   <div class="clips">
                     <div class="row">
                       <div class="col-lg-12">
-                        <div class="heading-section">
-                          <h4><em>Your Most Popular</em> Clips</h4>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-sm-6">
-                        <div class="item">
-                          <div class="thumb">
-                            <img src="assets/images/clip-01.jpg" alt="" style="border-radius: 23px;">
-                            <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i class="fa fa-play"></i></a>
+                        <div class="feature-banner header-text mt-3">
+                          <div class="row">
+                            <div class="col-lg-6">
+                                <div class="heading-section d-flex justify-content-between align-items-center mb-3">
+                                    <h4><em>Media</em> Likes <i class="fa fa-thumbs-up"></i></h4>
+                                </div>
+                                <div class="col-lg-10 mb-5">
+                                    <div class="item" style=" padding: 20px; border: 1px solid #444; border-radius: 23px;">
+                                      <h4 class="mb-2">Your favorites:</h4>
+                                      @foreach($likes as $like)
+                                        <p>- {{ $like->multimedia->title }}</p>
+                                      @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="heading-section d-flex justify-content-between align-items-center mb-3">
+                                    <h4><em>Update</em> Details <i class="fa fa-user-circle"></i></h4>
+                                </div>
+                                <form id="updateForm" method="POST" action="{{ route('profile.update') }}">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6 form-group mb-5">
+                                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Name" required
+                                            @auth
+                                                value="{{ auth()->user()->name }}"
+                                            @endauth
+                                        >
+                                    </div>
+                                    <div class="col-md-6 form-group mb-5">
+                                        <input type="text" class="form-control" id="username" name="username" placeholder="Your Username" required
+                                            @auth
+                                                value="{{ auth()->user()->username }}"
+                                            @endauth
+                                        >
+                                    </div>
+                                    <div class="col-md-12 form-group mb-5">
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Your Email" required
+                                          @auth
+                                            value="{{ auth()->user()->email }}"
+                                          @endauth
+                                        >
+                                    </div>
+                                    <div class="mb-3" style="color: white; font-weight: bold;">
+                                      By clicking the Update button, you consent to the changes in your information and agree to our <span style="color: #e75e8d;">Terms and Conditions</span> and <span style="color: #e75e8d;">Privacy Policy</span>.
+                                    </div>
+                                    <div class="col-md-12 form-group">
+                                        <button type="submit" class="btn btn" style="background-color: #ec6090; color: white;">Update</button>
+                                    </div>
+                                </div>
+                                </form>
+                            </div>
                           </div>
-                          <div class="down-content">
-                            <h4>First Clip</h4>
-                            <span><i class="fa fa-eye"></i> 250</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-sm-6">
-                        <div class="item">
-                          <div class="thumb">
-                            <img src="assets/images/clip-02.jpg" alt="" style="border-radius: 23px;">
-                            <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i class="fa fa-play"></i></a>
-                          </div>
-                          <div class="down-content">
-                            <h4>Second Clip</h4>
-                            <span><i class="fa fa-eye"></i> 183</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-sm-6">
-                        <div class="item">
-                          <div class="thumb">
-                            <img src="assets/images/clip-03.jpg" alt="" style="border-radius: 23px;">
-                            <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i class="fa fa-play"></i></a>
-                          </div>
-                          <div class="down-content">
-                            <h4>Third Clip</h4>
-                            <span><i class="fa fa-eye"></i> 141</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-3 col-sm-6">
-                        <div class="item">
-                          <div class="thumb">
-                            <img src="assets/images/clip-04.jpg" alt="" style="border-radius: 23px;">
-                            <a href="https://www.youtube.com/watch?v=r1b03uKWk_M" target="_blank"><i class="fa fa-play"></i></a>
-                          </div>
-                          <div class="down-content">
-                            <h4>Fourth Clip</h4>
-                            <span><i class="fa fa-eye"></i> 91</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-lg-12">
-                        <div class="main-button">
-                          <a href="#">Load More Clips</a>
                         </div>
                       </div>
                     </div>
@@ -106,45 +104,6 @@
         </div>
         <!-- ***** Banner End ***** -->
 
-        <!-- ***** Gaming Library Start ***** -->
-        <div class="gaming-library profile-library">
-          <div class="col-lg-12">
-            <div class="heading-section">
-              <h4><em>Your Gaming</em> Library</h4>
-            </div>
-            <div class="item">
-              <ul>
-                <li><img src="assets/images/game-01.jpg" alt="" class="templatemo-item"></li>
-                <li><h4>Dota 2</h4><span>Sandbox</span></li>
-                <li><h4>Date Added</h4><span>24/08/2036</span></li>
-                <li><h4>Hours Played</h4><span>634 H 22 Mins</span></li>
-                <li><h4>Currently</h4><span>Downloaded</span></li>
-                <li><div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div></li>
-              </ul>
-            </div>
-            <div class="item">
-              <ul>
-                <li><img src="assets/images/game-02.jpg" alt="" class="templatemo-item"></li>
-                <li><h4>Fortnite</h4><span>Sandbox</span></li>
-                <li><h4>Date Added</h4><span>22/06/2036</span></li>
-                <li><h4>Hours Played</h4><span>745 H 22 Mins</span></li>
-                <li><h4>Currently</h4><span>Downloaded</span></li>
-                <li><div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div></li>
-              </ul>
-            </div>
-            <div class="item last-item">
-              <ul>
-                <li><img src="assets/images/game-03.jpg" alt="" class="templatemo-item"></li>
-                <li><h4>CS-GO</h4><span>Sandbox</span></li>
-                <li><h4>Date Added</h4><span>21/04/2022</span></li>
-                <li><h4>Hours Played</h4><span>632 H 46 Mins</span></li>
-                <li><h4>Currently</h4><span>Downloaded</span></li>
-                <li><div class="main-border-button border-no-active"><a href="#">Donwloaded</a></div></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <!-- ***** Gaming Library End ***** -->
       </div>
     </div>
   </div>

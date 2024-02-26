@@ -29,7 +29,8 @@ class MultimediaController extends Controller
             'person' => null,
             'genre'=>null,
             'type'=>null,
-            'user'=>null
+            'user'=>null,
+            'contact'=>null,
         ], ["multimedia"=> $multimedia, "query" => $query,'sort' => $sort, 'order' => $order]);
     }
 

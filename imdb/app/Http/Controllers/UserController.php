@@ -29,6 +29,7 @@ class UserController extends Controller
             'multimedia' => null,
             'genre'=>null,
             'type'=>null,
+            'contact'=>null,
         ], ["user"=> $user, "query" => $query,'sort' => $sort, 'order' => $order]);
     }
 

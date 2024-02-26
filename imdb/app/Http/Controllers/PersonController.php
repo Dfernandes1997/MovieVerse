@@ -26,7 +26,8 @@ class PersonController extends Controller
             'multimedia' => null,
             'genre'=>null,
             'type'=>null,
-            'user'=>null
+            'user'=>null,
+            'contact'=>null,
         ], ["person"=> $person, "query" => $query,'sort' => $sort, 'order' => $order]);
     }
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\MultimediaController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\TypeController;
@@ -29,9 +30,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 ////////////////////////////////////////////////////////////////////////////////// Front-office
-Route::get('/', [HomeController::class, 'index']); //pagina de home
+Route::get('/', [HomeController::class, 'index']); //pagina de home front-office
 
-Route::get('/profile', function () {return view('front-office.profile');}); //pagina de profile, melhorar com user id na route, meter middleware de auth ????????
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->middleware('auth');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 //// Contact Controller
 Route::get('/support', [ContactController::class, 'ContactForm'])->name('contact'); //pagina de support/mandar mensagens
@@ -144,4 +148,10 @@ Route::middleware(['admin'])->group(function () {
     Route::delete('admin/users/delete/{id}', [UserController::class, 'delete'])->name('admin.users.delete');
     Route::get('admin/users/edit/{id}', [UserController::class, 'edit'])->name('admin.users.edit'); 
     Route::put('admin/users/update/{id}', [UserController::class, 'update'])->name('admin.users.update');
+});
+
+//Contacts controller
+Route::middleware(['admin'])->group(function () {
+    Route::get('admin/contacts', [ContactController::class, 'index'])->name('admin.contacts'); // mostrar tabela messages
+    Route::post('/update-read', [ContactController::class, 'updateRead'])->name('update.read');
 });

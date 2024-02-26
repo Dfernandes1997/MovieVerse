@@ -26,7 +26,8 @@ class TypeController extends Controller
             'person' => null,
             'multimedia' => null,
             'genre'=>null,
-            'user'=>null
+            'user'=>null,
+            'contact'=>null,
         ], ["type"=> $type, "query" => $query,'sort' => $sort, 'order' => $order]);
     }
 
